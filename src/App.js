@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import {
   FaMicrophone,
   FaPause,
+  FaPlay,
   FaTrash,
   FaPaperPlane,
   FaPlus,
@@ -85,16 +86,21 @@ const AudioRecorder = () => {
   };
 
   const deleteRecording = () => {
-    // stopRecording();
+    if (isRecording) {
+      stopRecording();
+    }
+
+    setRecordings((prevRecordings) => prevRecordings.slice(0, -1));
     setRecordingDuration(0);
   };
 
   const sendRecording = () => {
-    stopRecording();
+    if (isRecording) {
+      stopRecording();
+    }
   };
 
   const changeSpeed = (index) => {
-    // I cycle through playback speeds for the recording and update the state
     const newRecordings = [...recordings];
     const speeds = [1, 1.5, 2];
     const currentSpeedIndex = speeds.indexOf(newRecordings[index].speed);
@@ -102,14 +108,12 @@ const AudioRecorder = () => {
       speeds[(currentSpeedIndex + 1) % speeds.length];
     setRecordings(newRecordings);
 
-    // I make sure the audio playback speed changes when the user selects a different speed
     if (audioRefs.current[index]) {
       audioRefs.current[index].playbackRate = newRecordings[index].speed;
     }
   };
 
   const formatTime = (seconds) => {
-    // I format the recording duration into minutes and seconds
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, "0")}:${secs
@@ -119,16 +123,16 @@ const AudioRecorder = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
-      <div className="w-full sm:w-[95%] lg:w-[40%] border-2 border-black p-4 bg-white rounded-lg  h-[100%]">
-        <div className="h-[85%] overflow-y-auto mb-4">
+      <div className="w-full sm:w-[95%] lg:w-[40%] border-2 border-black p-4 rounded-lg bg-white h-[70vh] relative">
+        <div className="overflow-y-auto mb-12">
           {recordings.map((recording, index) => (
             <div
               key={index}
-              className="bg-gray-200 p-12 mb-2 rounded flex items-center"
+              className="bg-gray-200 p-2 mb-2 rounded flex items-center"
             >
               <button
                 onClick={() => changeSpeed(index)}
-                className="bg-white rounded-full w-8 h-8 flex items-center justify-center mr-2"
+                className="bg-red-200 rounded-full w-8 h-8 flex items-center justify-center mr-2"
               >
                 {recording.speed}x
               </button>
@@ -138,7 +142,6 @@ const AudioRecorder = () => {
                 src={recording.url}
                 style={{ width: "calc(100% - 40px)" }}
                 onPlay={() => {
-                  // I make sure the correct playback rate is set when the recording is played
                   if (audioRefs.current[index]) {
                     audioRefs.current[index].playbackRate = recording.speed;
                   }
@@ -147,9 +150,9 @@ const AudioRecorder = () => {
             </div>
           ))}
         </div>
-        <div className="h-[15%] bg-gray-300 p-2 flex items-center rounded">
+        <div className="h-[15%] bg-gray-300 p-2 flex items-center rounded absolute bottom-5 w-[92%]">
           {!isRecording ? (
-            <div className=" flex gap-2 w-full">
+            <div className="flex gap-2 w-full">
               <button className="mr-2">
                 <FaPlus />
               </button>
@@ -180,7 +183,7 @@ const AudioRecorder = () => {
                 </div>
                 <button onClick={sendRecording}>
                   <FaPaperPlane />
-                </button>{" "}
+                </button>
               </div>
             </div>
           )}
