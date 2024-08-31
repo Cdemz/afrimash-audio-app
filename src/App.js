@@ -123,8 +123,8 @@ const AudioRecorder = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
-      <div className="w-full sm:w-[95%] lg:w-[40%] border-2 border-black p-4 rounded-lg bg-white h-[70vh] relative">
-        <div className="overflow-y-auto mb-12">
+      <div className="w-full sm:w-[95%] lg:w-[40%] border-2 border-black p-4 rounded-lg bg-white h-[70vh] relative overflow-hidden">
+        <div className="overflow-y-scroll mb-12">
           {recordings.map((recording, index) => (
             <div
               key={index}
